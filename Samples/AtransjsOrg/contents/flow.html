@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+  <style>
+    div {
+      display: none;
+    }
+  </style>
+  <meta http-equiv="refresh" content="0;url=/index.html">
+</head>
+<body>
+<div>
+  <h1>Flow</h1>
+  <div class="card-page">
+    <h2>コンテンツの取得と遷移関数</h2>
+    <p>
+      ここでは、コンテンツの取得や遷移を行う2つの関数のフロー図を記載しています。
+      それぞれオーバーライドすることが前提の関数をいくつも持っているので、参考にしていただければと思います。
+      個々の関数の詳細な動きに関しては<a href="/document/index.html" class="atrans-link page-link" data-atlink="document" data-atarea="default">Document</a>をご確認ください。
+    </p>
+    <h2 id="function-name">atrans.trans()</h2>
+    <strong>Arguments</strong>
+    <ol>
+      <li>contentName</li>
+      <li>areaName</li>
+      <li class="arg-trans">addHistoryFlg </li>
+      <li class="arg-trans">analyticsFlg</li>
+    </ol>
+    
+    <h4>Fucntion</h4>
+    <div id="area-flow-function" class="btn-group btn-switch-group" data-type="radio">
+      <button id="btn-flow-trans" type="button" class="btn btn-switch" data-on="true" data-value="trans">trans()</button>
+      <button id="btn-flow-init" type="button" class="btn btn-switch" data-on="false" data-value="init">init()</button>
+    </div>
+    <h4>Cache Type</h4>
+    <div id="area-flow-chace" class="btn-group btn-switch-group" data-type="radio">
+      <button id="btn-flow-dom" type="button" class="btn btn-switch" data-on="true" data-value="dom">C_DOM</button>
+      <button id="btn-flow-session" type="button" class="btn btn-switch" data-on="false" data-value="session">C_SESSION</button>
+      <button id="btn-flow-local" type="button" class="btn btn-switch" data-on="false" data-value="local">C_LOCAL</button>
+      <button id="btn-flow-none" type="button" class="btn btn-switch" data-on="false" data-value="none">C_NONE</button>
+    </div>
+    <h4>Arguments <small>Blue:true White:false</small></h4>
+    <div id="area-flow-flg" class="btn-group btn-switch-group" data-type="checkbox">
+      <button id="btn-flow-history" type="button" class="btn btn-switch" data-on="true" data-value="history">addHistoryFlg</button>
+      <button id="btn-flow-analytics" type="button" class="btn btn-switch" data-on="true" data-value="analytics">analyticsFlg</button>
+    </div>
+    <div class="area-svg-flow">
+      <svg viewBox="0, 0, 808, 1050">
+        <text x="680" y="20" text-anchor="start">Function</text>
+        <text x="680" y="40" text-anchor="start" class="override">Override Function</text>
+        
+        <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 10)" class="override">beforeTrans()</text>
+        <rect width="160" height="60" id="obj-before" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 10)"></rect>
+  
+        <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 70)"></line>
+  
+        <text x="80" y="27" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 116)">has cache?</text>
+        <rect width="80" height="80" class="rhombus" transform="matrix(1, 0, 0, 1, 10, 116) scale(1.5, 0.7) rotate(45, 53, 53)"></rect>
+  
+        <text x="90" y="20" transform="matrix(1, 0, 0, 1, 10, 178)">Yes, append HTML</text>
+        <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 178)"></line>
+  
+        <g id="flow-cache">
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 208)">addEventLink()</text>
+          <rect width="160" height="60" id="obj-cache-addEvent" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 208)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 268)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 298)">addHistory()</text>
+          <text x="100" y="53" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 298)" class="small">Rewrite URL</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 298)" class="obj-history"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 358)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 388)" class="override">analytics()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 388)" class="obj-analytics"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 448)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 478)">setTitle()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 478)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 538)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 568)">setDescription()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 568)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 10, 628)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 10, 658)" class="override">afterTrans()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 10, 658)"></rect>
+          
+        </g>
+  
+  
+        <text x="105" y="-10" text-anchor="middle" transform="matrix(1, 0, 0, 1, 94, 140)">No</text>
+        <line x1="80" y1="0" x2="160" y2="0" transform="matrix(1, 0, 0, 1, 94, 140)"></line>
+  
+        <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 110)">getContent()</text>
+        <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 110)"></rect>
+  
+        <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 170)"></line>
+  
+        <text x="80" y="27" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 214)">Ajax success?</text>
+        <rect width="80" height="80" class="rhombus" transform="matrix(1, 0, 0, 1, 254, 214) scale(1.5, 0.7) rotate(45, 53, 53)"></rect>
+  
+        <text x="90" y="20" transform="matrix(1, 0, 0, 1, 254, 276)">Yes, append HTML</text>
+        <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 276)"></line>
+  
+        <g>
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 306)">addEventLink()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 306)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 366)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 396)">addHistory()</text>
+          <text x="100" y="53" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 396)" class="small">Rewrite URL</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 396)" class="obj-history"></rect>
+           
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 456)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 486)" class="override">analytics()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 486)" class="obj-analytics"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 546)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 576)">setTitle()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 576)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 636)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 666)">setDescription()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 666)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 726)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 756)" class="override">success()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 756)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 816)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 846)" class="override">complete()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 846)"></rect>
+    
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 254, 906)"></line>
+    
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 254, 936)" class="override">afterTrans()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 254, 936)"></rect>
+        </g>
+  
+        <text x="105" y="-10" text-anchor="middle" transform="matrix(1, 0, 0, 1, 338, 238)">No</text>
+        <line x1="80" y1="0" x2="240" y2="0" transform="matrix(1, 0, 0, 1, 338, 238)"></line>
+  
+        <g>
+          <line x1="80" y1="0" x2="80" y2="68" transform="matrix(1, 0, 0, 1, 498, 238)"></line>
+  
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 498, 306)" class="override">failure()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 498, 306)"></rect>
+  
+          <line x1="80" y1="0" x2="80" y2="30" transform="matrix(1, 0, 0, 1, 498, 366)"></line>
+  
+          <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 498, 396)" class="override">complete()</text>
+          <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 498, 396)"></rect>
+        </g>
+  
+        <rect width="230" height="80" rx="10" ry="10" stroke-dasharray="3" transform="matrix(1, 0, 0, 1, 240, 100)"></rect>
+        <line x1="210" y1="20" x2="320" y2="20" transform="matrix(1, 0, 0, 1, 240, 100)"></line>
+        <text x="240" y="10" transform="matrix(1, 0, 0, 1, 240, 100)">timeout</text>
+  
+        <text x="80" y="35" text-anchor="middle" transform="matrix(1, 0, 0, 1, 560, 90)" class="override">timeout()</text>
+        <rect width="160" height="60" rx="10" ry="10" transform="matrix(1, 0, 0, 1, 560, 90)"></rect>
+  
+      </svg>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

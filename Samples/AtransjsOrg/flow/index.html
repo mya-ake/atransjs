@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta name="author" content="mya-ake">
+	<meta name="copyright" content="mya-ake">
+	<meta name="description" content="">
+
+	<title></title>
+
+	<link href="../css/style.min.css" rel="stylesheet">
+
+</head>
+<body>
+  <header id="header"></header>
+  
+  <div id="bg-header"></div>
+  
+  <section id="main" data-show="false">
+    <section id="page-error" class="elem-atrans" style="display: none;">
+      <h1>Error</h1>
+      <div class="card-page">
+        <h2>エラーが発生しました</h2>
+        <p>
+          ページが見つからない。または、なんらかのエラーが発生しました。
+          URLをご確認の上、再度アクセスいただくか、下記リンクよりトップページに移動してください。
+          <div class="text-center">
+            <h5><a href="https://atransjs.org">Atrans.js TOP</a></h5>
+          </div>
+        </p>
+      </div>
+    </section>
+    <section id="page-timeout" class="elem-atrans" style="display: none;">
+      <h1>Timeout</h1>
+      <div class="card-page">
+        <h2>タイムアウト</h2>
+        <p>
+          ページの読み込みに時間がかかっています。
+          電波状況をご確認の上、再度アクセスをお願い致します。
+          <div class="text-center">
+            <h5><a href="https://atransjs.org">Atrans.js TOP</a></h5>
+          </div>
+        </p>
+      </div>
+    </section>
+    
+  </section>
+  
+  <div id="scroll-top" data-show="false">
+    <svg width="50" height="50">
+      <path d="M13,45 L25,8 L37,45 M10,35 H40 M25,25 V50"></path>
+      <path d="M13,45 L25,50, L37,45" style="stroke: transparent;"></path>
+    </svg>
+  </div>
+  
+	<footer id="footer"></footer>
+
+	<script src="../js/atrans.min.js"></script>
+	<script src="../js/sample.min.js"></script>
+
+</body>
+</html>

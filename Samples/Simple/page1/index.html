@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta name="author" content="may-ake">
+	<meta name="copyright" content="may-ake">
+	<meta name="description" content="Sample Usage">
+
+	<title>Simple Atrans.js</title>
+
+  <style>
+  #nav {
+  	display: -webkit-flex;
+  	display: flex;
+  }
+  #nav li {
+    list-style: none;
+  }
+  #nav li:first-child {
+    margin-right: auto;
+  }
+  #nav li a {
+    padding: 0.8em;
+  }
+  #logo {
+    font-size: 1.5em;
+  }
+  #footer {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <ul id="nav">
+      <li><a id="logo" href="/index.html" class="atrans-link" data-atlink="default" data-atarea="default">Atrans.js</a></li>
+      <li><a href="/index.html" class="atrans-link" data-atlink="default" data-atarea="default">Top</a></li>
+      <li><a href="/page1/index.html" class="atrans-link" data-atlink="page1" data-atarea="default">Page1</a></li>
+      <li><a href="/page2/index.html" class="atrans-link" data-atlink="page2" data-atarea="default">Page2</a></li>
+    </ul>
+  </header>
+  
+  <section id="main"></section>
+
+	<footer id="footer">
+    <span>&copy; 2015 <a href="https://twitter.com/mya_ake" target="_blank">mya-ake</a></span>
+    <br>
+    <span>Released under the <a href="http://opensource.org/licenses/mit-license.php" target="_blank">MIT license</a></span>
+	</footer>
+
+	<script src="../js/atrans.min.js"></script>
+	<script src="../js/sample.js"></script>
+
+</body>
+</html>

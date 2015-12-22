@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+  <style>
+    div {
+      display: none;
+    }
+  </style>
+  <meta http-equiv="refresh" content="0;url=/index.html">
+</head>
+<body>
+<div>
+  <h1>Document</h1>
+  <div class="card-page">
+    <h2>仕組み <small>Mechanism</small></h2>
+    <p>
+      Atrans.jsは、atrans.contentsオブジェクトとatrans.areasオブジェクトでウェブサイトのコンテンツを管理します。
+      atrans.contentsオブジェクトは、コンテンツの保管場所、表示したときのURL、title、descriptionを指定します。
+      atrans.areasオブジェクトは、コンテンツを表示する場所と追加するときのタグ、追加したコンテンツの永続化、キャッシュの仕方を指定します。
+    </p>
+    <p>
+      遷移時にatrans.contentsオブジェクトとatrans.areasオブジェクトを元に、Ajax（XMLHttpRequest）でコンテンツを取得し、ページにコンテンツを追加します。
+    </p>
+
+    <h3>JavaScript</h3>
+    <p>
+      下記がトップページの他に2ページ存在するウェブサイトのAtrans.jsの初期処理の例です。
+      header部とfooter部もファイルを分けて管理しているとします。
+    </p>
+    <pre><code>
+    window.addEventListener("load", initAtrans, false );
+    function initAtrans() {
+      atrans.contents = {
+        default: {
+          path: "/contents/top.html",   // コンテンツが置かれいる相対パス
+          url: "/",   // このコンテンツを表示するときのURL（省略した場合は、path が代わりに適用されます）
+          title: "Top Page",    // このコンテンツを表示するときのtitle（省略した場合は、変更なし）
+          description: "トップページです。",    // このコンテンツを表示するときのdescription（省略した場合は、変更なし）
+        },
+        page1: {
+          path: "/contents/page1.html",
+          url: "/page1/",
+          title: "Page1",
+          description: "ページ1です。",
+        },
+        page2: {
+          path: "/contents/page2.html",
+          url: "/page2/",
+          title: "Page2",
+          description: "ページ2です。",
+        },
+        header: {
+          path: "/elements/header.html",
+        },
+        footer: {
+          path: "/elements/footer.html",
+        },
+      };
+      
+      atrans.areas = {
+        default: {
+          id: "main",   // コンテンツの挿入先要素のid
+          tag: "section",   // コンテンツを挿入するときのタグ
+          permanence: false,    // この area 内のコンテンツを永続化するか
+          cache: atrans.cache.C_DOM,    // この area 内のコンテンツのキャッシュの仕方（省略した場合は、atrans.setCache()関数の設定が適用されます）
+        },
+        haeder: {
+          id: "header",
+          tag: "div",
+          permanence: true,
+          cache: atrans.cache.C_SESSION,
+        },
+        footer: {
+          id: "footer",
+          tag: "div",
+          permanence: true,
+          cache: atrans.cache.C_SESSION,
+        },
+      };
+      atrans.getContent("header", "header", false);     // header部の取得
+      atrans.getContent("footer", "footer", false);     // footer部の取得
+      atrans.init();    // 初期ページの取得
+    }
+    </code></pre>
+    <p>
+      上の例がAtrans.jsの設定処理です。JavaScriptファイルはこの記述だけで完了です。
+      ページ遷移時のアニメーションを付けたい場合は、その他の関数をオーバーライドすることで実装することができます。
+      呼ばれる関数のタイミングを確認される方は、<a href="/flow/index.html" class="atrans-link page-link" data-atlink="flow" data-atarea="default">Flow</a>をご確認ください。
+      また、<a href="/download/index.html" class="atrans-link page-link" data-atlink="download" data-atarea="default">Download</a>では、上の例やこのサイトを含むサンプルが入ったパッケージがダウンロードできます。
+      制作のご参考にご利用いただければと思います。
+    </p>
+    <h3>HTML</h3>
+    <p>
+      次に、コンテンツ内のaタグに関してです。
+      通常のaタグのままでは、通常のウェブサイトと同様に遷移するので、コンテンツが全て再読み込みされてしまいます。
+      そこで、下記の様にaタグに属性を追加することで、Atrans.jsを用いた遷移が可能になります。
+      追加している属性は、「class="atrans-link"」と「data-atlink="page1"」です。
+      「class="atrans-link"」を指定することでAtrans.jsの遷移イベントが付与されます。
+      「data-atlink="page1"」には、遷移先のコンテンツ名を指定します。この場合は、page1のコンテンツに遷移します。
+      <pre><code class="HTML">
+        &lt;a href="/page1/index.html" class="atrans-link" data-atlink="page1"&gt;Page1へ&lt;/a&gt;
+      </code></pre>
+    </p>
+    <h2>Atrans.jsの設定 <small>Configuration</small></h2>
+    <p>
+      Atrans.jsにはコンテンツのキャッシュの仕方などいくつかの設定があります。
+      下記が設定の一覧になります。
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>対象</th>
+          <th>内容</th>
+          <th>デフォルト値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>コンテンツキャッシュ</th>
+          <td>
+            デフォルトのコンテンツのキャッシュの仕方を指定します。
+            キャッシュすることでサーバーにコンテンツを再取得しなくなります。
+            尚、area ごとにキャッシュの仕方を設定することもできます。
+            <br>
+            設定値は下記4種類です。
+            <dt>atrans.cache.C_DOM or "dom"</dt>
+            <dd>DOMに配置し、遷移時に非表示にします。ユーザーが再度ウェブサイトを訪れた際はサーバーからコンテンツを取得します。</dd>
+            <dt>atrans.cache.C_SESSION or "session" ※1</dt>
+            <dd>セッションストレージに保存します。ユーザーが再度ウェブサイトを訪れた際は、セッションストレージになければ、サーバーからコンテンツを取得します。</dd>
+            <dt>atrans.cache.C_LOCAL or "local" ※1</dt>
+            <dd>ローカルストレージに保存します。ユーザーが再度ウェブサイトを訪れた際は、ローカルストレージになければ、サーバーからコンテンツを取得します。</dd>
+            <dt>atrans.cache.C_NONE or "none"</dt>
+            <dd>コンテンツをキャッシュしません。遷移する度にサーバーからコンテンツを取得します。</dd>
+            <br>
+            <strong>atrans.setCache()</strong>関数で設定します。
+            <br>
+            例：atrans.setCache(atrans.cache.C_SESSION);
+          </td>
+          <td>
+            C_DOM
+          </td>
+        </tr>
+        <tr>
+          <th>履歴管理</th>
+          <td>
+            履歴の管理を行うかを設定できます。trueを設定した場合は、戻るや次へなどのイベントに対処することができます。
+            falseの場合は、履歴の管理を行わないため、戻るイベントが発生した場合は、ウェブサイトを離れてしまいます。
+            <br>
+            <br>
+            <strong>atrans.setHistory()</strong>関数で設定します。
+            <br>
+            例：atrans.setHistory(false);
+          </td>
+          <td>true</td>
+        </tr>
+        <tr>
+          <th>タイムアウト</th>
+          <td>
+            コンテンツ取得時のタイムアウトイベントを利用するか設定できます。
+            trueに設定すると設定時間を超えるとatrans.timeout()関数を呼び出します。
+            <br>
+            <br>
+            <strong>atrans.setTimeout()</strong>関数で設定します。単位はミリ秒です。
+            <br>
+            例：atrans.setTimeout(true, 5000);
+          </td>
+          <td>false</td>
+        </tr>
+      </tbody>
+    </table>
+    <small>
+      ※1 この設定を利用するとユーザーが再びウェブサイトを訪れた際に、コンテンツの内容を更新していても反映されない場合があるのでご注意ください。
+      内容を更新したい場合は、atrans.sessionClear()関数やatrans.localClear()関数をご活用ください。
+    </small>
+    
+    
+    <h2>オーバーライド関数 <small>Override Function</small></h2>
+    <p>
+      Atrans.jsは、遷移のアニメーションなどを自由に設定するために、オーバーライドして扱うことが前提の関数がいくつかあります。
+    </p>
+    <ul>
+      <li>atrans.beforeTrans()</li>
+      <li>atrans.success()</li>
+      <li>atrans.failure()</li>
+      <li>atrans.complete()</li>
+      <li>atrans.timeout()</li>
+      <li>atrans.afterTrans()</li>
+      <li>atrans.onpopstate()</li>
+      <li>atrans.analytics()</li>
+    </ul>
+    <p>
+      これらの関数は下記のように記述することでオーバーライドされます。
+      関数の呼ばれるタイミングを確認されたい方は、<a href="/flow/index.html" class="atrans-link page-link" data-atlink="flow" data-atarea="default">Flow</a>をご確認ください。
+      より詳しい使い方を確認されたい方は、<a href="/download/index.html" class="atrans-link page-link" data-atlink="download" data-atarea="default">Download</a>から
+      サンプル入りのパッケージをダウンロードしてご確認ください。
+    </p>
+    <pre><code>
+    window.addEventListener("load", initAtrans, false );
+    function initAtrans() {
+      /***
+        その他設定は省略
+      ***/
+      
+      atrans.beforeTrans = function(contentName, areaName) {
+        fadeOut();
+      };
+      
+      atrans.afterTrans = function(elem, contentName, areaName) {
+        fadeIn(elem);
+      };
+      
+      atrans.init();    // 初期ページの取得
+    }
+    
+    function fadeOut() {
+      // フェードアウト処理
+    }
+    function fadeIn(elem) {
+      // フェードイン処理
+    }
+    </code></pre>
+    
+    <h2>アナリティクスの設定 <small>Analytics</small></h2>
+    <p>
+      SPAの場合、Google Analyticsなどのトラッキングサービスをご利用するには一手間必要になります。
+      Atrans.jsでは、下記の様に記述しておくことで、ページ遷移をトラッキングできるようになります。
+    </p>
+    <h3>Google Analytics</h3>
+    <pre><code>
+    window.addEventListener("load", initAtrans, false );
+    function initAtrans() {
+      /***
+        その他設定は省略
+      ***/
+      
+      atrans.analytics = function() {
+        if (typeof ga === "function") {
+          ga('send', 'pageview', {
+            "page": window.location.pathname,
+            "title": document.title,
+          });
+        }
+      };
+      
+      atrans.init();    // 初期ページの取得
+    }
+    </code></pre>
+    
+    <h2>関数 <small>Functions</small></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Function</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>atrans.addEventLink(id)</td>
+          <td>
+            atrans-link クラスを持つ要素にクリックイベント付与します。
+            この要素をクリックするとatrans.trans()関数が呼ばれます。
+            付与した要素に data-atlink属性がない場合は、atrans.trans()関数は呼ばれません。
+            引数idを指定するとそのidを持った要素の子要素のみが対象になります。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.addHistory(contentName)</td>
+          <td>指定した contentName のurl、または path に現在の URL を書き換え、履歴に追加します。</td>
+        </tr>
+        <tr>
+          <td>atrans.afterTrans(elem, contentName, areaName)</td>
+          <td>
+            atrans.trans()関数やatrans.getContent()関数でコンテンツの取得に成功した時に呼ばれる関数になります。
+            引数elemには遷移予定の element が与えられます。
+            引数contentNameには遷移予定の contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            オーバーライドしてご利用ください。
+            尚、デフォルトでは、atrans.showElem()関数が呼ばれます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.analytics()</td>
+          <td>
+            Google Analyticsなどでサイトのトラッキングを行う場合にご利用ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.appendCss(href)</td>
+          <td>CSS用のlinkタグをheadタグ内に追加します。</td>
+        </tr>
+        <tr>
+          <td>atrans.appendHtml(innerHtml, areaObj, id)</td>
+          <td>
+            areaObj の内容にしたがって、innerHtml を反映させます。
+            id に文字列を指定するとプレフィックス（atrans-）を付けて id属性を付与します。
+            id は省略可能です。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.appendJs(src, asyncFlg)</td>
+          <td>scriptタグをheadタグ内に追加します。asyncFlg に false を指定すると scriptタグの属性に async属性が付与されなくなります。</td>
+        </tr>
+        <tr>
+          <td>atrans.beforeTrans(contentName, areaName)</td>
+          <td>
+            atrans.trans()関数で最初に呼ばれる関数になります。オーバーライドしてご利用ください。
+            引数contentNameには遷移予定の contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            尚、デフォルトでは、キャッシュの仕方がatrans.cache.C_DOMの場合は、atrans.hiddenAll()関数が呼ばれます。
+            その他のキャッシュの仕方の場合は、atrans.removeAll()関数が呼ばれます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.complete(contentName, areaName)</td>
+          <td>
+            atrans.getContent()関数でコンテンツの取得の成功、失敗に関わらず取得処理が終了した時に呼ばれる関数になります。
+            引数contentNameには取得しようとした contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            オーバーライドしてご利用ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.failure(contentName, areaName)</td>
+          <td>
+            atrans.getContent()関数でコンテンツの取得に失敗した時に呼ばれる関数になります。
+            引数contentNameには取得しようとした contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            オーバーライドしてご利用ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.getBasePath(homeDirectory)</td>
+          <td>
+            指定した homeDirectory までのパスを取得します。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.getBodyInnerHtml(html)</td>
+          <td>引数html（string型） のbodyタグのinnerHTMLを取得します。</td>
+        </tr>
+        <tr>
+          <td>atrans.getContent(contentName, areaName, addHistoryFlg, analyticsFlg)</td>
+          <td>
+            指定した contentName の path から コンテンツを取得し、areaName に取得したコンテンツを追加します。
+            内部で幾つかの関数を呼び出します。
+            詳細は<a href="/flow/index.html" class="atrans-link page-link" data-atlink="flow" data-atarea="default">Flow</a>をご確認ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.getContentName()</td>
+          <td>
+            URLから現在のコンテンツ名を取得します。
+            見つからない場合はデフォルトのコンテンツが返されます。
+            尚、計算量は<i>O(n)</i>です。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.hiddenAll(areaName)</td>
+          <td>
+            areaNameに指定したareasオブジェクトのpermanenceにfalseを指定している要素の中の要素を display: none; にします。
+            areaNameを省略した場合はareasオブジェクト関係なく、Atrans.jsで扱っている全ての要素が対象になります。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.init(contentName, areaName)</td>
+          <td>
+            Atrans.jsの設定後に呼ぶことで最初のコンテンツを読み込みます。
+            contentName、areaNameは共に省略可能です。
+            contentNameを省略した場合は atrans.getContentName()関数が呼ばれ、URL応じたコンテンツを読み込みます。
+            areaName を省略した場合は、デフォルトに設定されている areaName が選択されます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.initUrl(contentName)</td>
+          <td>
+            指定した contentName のurl、または path に現在の URL を書き換えます。
+            atrans.setHistory()関数で false を指定していなければ atrans.init()関数で呼ばれます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.localClear(contentName)</td>
+          <td>
+            指定した contentName のコンテンツをローカルストレージから削除します。
+            contentNameを省略した場合は、ローカルストレージを空にします。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.onpopstate(contentName)</td>
+          <td>
+            onpopstateイベント発生時に呼ばれる関数になります。
+            引数contentNameには遷移予定の contentName が与えられます。
+            オーバーライドしてご利用ください。
+            尚、デフォルトでは、atrans.trans()関数が呼ばれます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.removeAll(areaName)</td>
+          <td>
+            areaNameに指定したareaオブジェクトのpermanenceにfalseを指定している要素の中の要素を削除します。
+            areaNameを省略した場合はareasオブジェクト関係なく、Atrans.jsで扱っている全ての要素が対象になります。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.showElem(elem, display)</td>
+          <td>
+            引数displayを省略した場合は、引数elem に指定した要素を display: block; にします。
+            省略しなかった場合は、指定したdisplayになります。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.sessionClear(contentName)</td>
+          <td>
+            指定した contentName のコンテンツをセッションストレージから削除します。
+            contentNameを省略した場合は、セッションストレージを空にします。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.setCache(cache)</td>
+          <td>Atrans.jsで扱うコンテンツのキャッシュの仕方を指定します。</td>
+        </tr>
+        <tr>
+          <td>atrans.setDescription(contentName)</td>
+          <td>指定した contentName の description に document の description を書き換えます。</td>
+        </tr>
+        <tr>
+          <td>atrans.setHistory(flg)</td>
+          <td>履歴管理を有効にするかを指定します。</td>
+        </tr>
+        <tr>
+          <td>atrans.setOnpopstate()</td>
+          <td>
+            onpopstateイベント（戻るや次へ進むが押されたときに発生するイベント）を有効にします。
+            atrans.setHistory()関数で false を指定していなければ atrans.init()関数で呼ばれます。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.setTimeout(flg, time)</td>
+          <td>
+            atrans.getContent()関数のタイムアウトを有効にするかを設定します。
+            time にはタイムアウトまでの時間を設定します。単位はミリ秒です。
+            尚、デフォルトではタイムアウトは無効になっており、タイムアウトの時間は5000ミリ秒に設定されています。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.setTitle(contentName)</td>
+          <td>指定した contentName の title に document の title を書き換えます。</td>
+        </tr>
+        <tr>
+          <td>atrans.success(elem, contentName, areaName)</td>
+          <td>
+            atrans.getContent()関数でコンテンツの取得に成功した時に呼ばれる関数になります。
+            引数elemには追加した element が与えられます。
+            引数contentNameには取得した contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            オーバーライドしてご利用ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.timeout(contentName, areaName)</td>
+          <td>
+            atrans.getContent()関数でコンテンツの取得に時間がかかっている場合に呼ばれる関数になります。
+            timeoutの時間設定は、atrans.setTimeout()関数をご利用ください。単位はミリ秒です。
+            引数contentNameには取得中の contentName が与えられます。
+            引数areaNameにはコンテンツが含まれる areaName が与えられます。
+            オーバーライドしてご利用ください。
+          </td>
+        </tr>
+        <tr>
+          <td>atrans.trans(contentName, areaName, addHistoryFlg, analyticsFlg)</td>
+          <td>
+            コンテンツのキャッシュの仕方に応じた遷移処理を行います。
+            内部で幾つかの関数を呼び出します。
+            contentName、areaName、addHistoryFlg、analyticsFlgはいずれも省略可能です。
+            contentNameを省略した場合は atrans.getContentName()関数が呼ばれ、URL応じたコンテンツを読み込みます。
+            areaName を省略した場合は、デフォルトに設定されている areaName が選択されます。
+            addHistoryFlg は true を指定するとatrans.addHistory()関数を呼び出します。
+            analyticsFlg は true を指定するとatrans.analytics()関数を呼び出します。
+            詳細は<a href="/flow/index.html" class="atrans-link page-link" data-atlink="flow" data-atarea="default">Flow</a>をご確認ください。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+</div>
+</body>
+</html>
